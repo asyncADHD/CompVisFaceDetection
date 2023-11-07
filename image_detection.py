@@ -1,13 +1,11 @@
 # image_detection.py
 import cv2
 import mediapipe as mp
+import subprocess
 
-
-# Define the coordinates and size of the tracking box
-box_x = 50  # X-coordinate of the top-left corner
-box_y = 50  # Y-coordinate of the top-left corner
-box_width = 100  # Width of the box
-box_height = 100  # Height of the box
+# Define the coordinates and size of the tracking boxes
+volume_up_box = (50, 50, 100, 100)  # (x, y, width, height)
+volume_down_box = (200, 50, 100, 100)  # (x, y, width, height)
 
 
 def init_webcam():
@@ -48,12 +46,30 @@ def detect_hands(cap):
                     index_finger = landmarks.landmark[8]
                     x, y = int(index_finger.x * frame.shape[1]), int(index_finger.y * frame.shape[0])
 
-                    # Check if the index finger is within the tracking box
-                    if box_x < x < box_x + box_width and box_y < y < box_y + box_height:
-                        print("Index finger is inside the tracking box")
+                    # Check if the index finger is within the volume up box
+                    if (volume_up_box[0] < x < volume_up_box[0] + volume_up_box[2] and
+                            volume_up_box[1] < y < volume_up_box[1] + volume_up_box[3]):
+                        print("Index finger is inside the volume up box")
 
-        # Draw the tracking box on the frame
-        cv2.rectangle(frame, (box_x, box_y), (box_x + box_width, box_y + box_height), (0, 0, 255), 2)
+                        # Increase the volume using AppleScript
+                        applescript_command = 'set volume output volume (output volume of (get volume settings) + 5)'
+                        subprocess.Popen(['osascript', '-e', applescript_command])
+
+                    # Check if the index finger is within the volume down box
+                    if (volume_down_box[0] < x < volume_down_box[0] + volume_down_box[2] and
+                            volume_down_box[1] < y < volume_down_box[1] + volume_down_box[3]):
+                        print("Index finger is inside the volume down box")
+
+                        # Decrease the volume using AppleScript
+                        applescript_command = 'set volume output volume (output volume of (get volume settings) - 5)'
+                        subprocess.Popen(['osascript', '-e', applescript_command])
+
+        # Draw the tracking boxes on the frame
+        cv2.rectangle(frame, (volume_up_box[0], volume_up_box[1]),
+                      (volume_up_box[0] + volume_up_box[2], volume_up_box[1] + volume_up_box[3]), (0, 0, 255), 2)
+        cv2.rectangle(frame, (volume_down_box[0], volume_down_box[1]),
+                      (volume_down_box[0] + volume_down_box[2], volume_down_box[1] + volume_down_box[3]), (0, 0, 255),
+                      2)
 
         cv2.imshow("Webcam", frame)
 
