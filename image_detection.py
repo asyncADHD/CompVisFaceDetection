@@ -2,11 +2,25 @@
 import cv2
 import mediapipe as mp
 
+    
 def init_webcam():
+    """
+    Initialize and return a capture object for the default camera (usually the built-in webcam).
+
+    Returns:
+        cv2.VideoCapture: A capture object for the webcam.
+    """
     cap = cv2.VideoCapture(0)
     return cap
 
+
 def detect_hands(cap):
+    """
+    Detect and display hand landmarks in the webcam feed.
+
+    Args:
+        cap (cv2.VideoCapture): A capture object for the webcam.
+    """
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands()
 
