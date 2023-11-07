@@ -42,18 +42,15 @@ def detect_hands(cap):
 
         if results.multi_hand_landmarks:
             for landmarks in results.multi_hand_landmarks:
-                # Draw landmarks on the frame
-                for landmark in landmarks.landmark:
-                    x, y = int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])
-                    cv2.circle(frame, (x, y), 5, (0, 255, 0), -1)
+                # Check if the hand has at least 8 landmarks (including the index finger)
+                if len(landmarks.landmark) >= 8:
+                    # Get the index finger landmark (landmark 8)
+                    index_finger = landmarks.landmark[8]
+                    x, y = int(index_finger.x * frame.shape[1]), int(index_finger.y * frame.shape[0])
 
-                    # Check if the index finger (landmark 8) is within the tracking box
+                    # Check if the index finger is within the tracking box
                     if box_x < x < box_x + box_width and box_y < y < box_y + box_height:
-                        # Activate volume control logic here
-                        # You can set a flag to indicate that the hand is inside the box
-                        # and use that flag in your volume control logic.
-                        print("TRACKING ACTIVATED")
-
+                        print("Index finger is inside the tracking box")
 
         # Draw the tracking box on the frame
         cv2.rectangle(frame, (box_x, box_y), (box_x + box_width, box_y + box_height), (0, 0, 255), 2)
