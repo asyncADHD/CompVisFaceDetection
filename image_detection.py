@@ -2,7 +2,7 @@
 import cv2
 import mediapipe as mp
 
-
+    
 def init_webcam():
     """
     Initialize and return a capture object for the default camera (usually the built-in webcam).
@@ -42,7 +42,7 @@ def detect_hands(cap):
 
         cv2.imshow("Webcam", frame)
 
-        if cv2.waitKey(1) & 0xFF == 27:  # Press 'Esc' to exit
+        if cv2.waitKey(1) & 0xFF == 27:
             break
 
     cap.release()
