@@ -1,9 +1,10 @@
 # main.py
-from image_detection import capture_webcam
+from image_detection import init_webcam, detect_hands
 
 
 def main():
-    capture_webcam()
+    cap = init_webcam()
+    detect_hands(cap)
 
 
 if __name__ == "__main__":
