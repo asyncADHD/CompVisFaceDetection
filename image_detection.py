@@ -2,7 +2,14 @@
 import cv2
 import mediapipe as mp
 
-    
+
+# Define the coordinates and size of the tracking box
+box_x = 50  # X-coordinate of the top-left corner
+box_y = 50  # Y-coordinate of the top-left corner
+box_width = 100  # Width of the box
+box_height = 100  # Height of the box
+
+
 def init_webcam():
     """
     Initialize and return a capture object for the default camera (usually the built-in webcam).
@@ -39,6 +46,17 @@ def detect_hands(cap):
                 for landmark in landmarks.landmark:
                     x, y = int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])
                     cv2.circle(frame, (x, y), 5, (0, 255, 0), -1)
+
+                    # Check if the index finger (landmark 8) is within the tracking box
+                    if box_x < x < box_x + box_width and box_y < y < box_y + box_height:
+                        # Activate volume control logic here
+                        # You can set a flag to indicate that the hand is inside the box
+                        # and use that flag in your volume control logic.
+                        print("TRACKING ACTIVATED")
+
+
+        # Draw the tracking box on the frame
+        cv2.rectangle(frame, (box_x, box_y), (box_x + box_width, box_y + box_height), (0, 0, 255), 2)
 
         cv2.imshow("Webcam", frame)
 
